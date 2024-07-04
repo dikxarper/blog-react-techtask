@@ -1,0 +1,36 @@
+/* Ant Design (exceptations) */
+.ant-pagination  {
+    margin-left: -10px;
+}
+
+
+
+/* Home Page */
+.upper__section {
+    text-align: end;
+}
+
+
+
+/* Post Page */
+.back-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    cursor: pointer;
+}
+
+
+/* Modal */
+#add-modal-form {
+    margin-top: 16px;
+}
+
+.form-element {
+    margin-bottom: 16px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}

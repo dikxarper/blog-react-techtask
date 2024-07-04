@@ -1,21 +1,26 @@
+import React from 'react'
 import './App.css'
-import { Layout } from 'antd';
+import '../public/css/style.css';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Header from './components/Header/Header'
+import Home from './pages/Home'
+import Footer from './components/Footer/Footer'
+import PostPage from './pages/PostPage';
+import About from './pages/About';
 
-const { Header, Content, Footer } = Layout;
-
-const App = () => {
+const App:React.FC = () => {
     return (
-        <Layout>
-            <Header>
-                <img src="/logo.png" alt="" />
-            </Header>
-            <Content>
-                
-            </Content>
-            <Footer>
-                techTask ©{new Date().getFullYear()} Created by dikxarper
-            </Footer>
-        </Layout>
+        <div className='container'>
+            <Header/>
+            <Router>
+                <Routes>
+                    <Route path='/' Component={Home}/>
+                    <Route path='/post/:id' Component={PostPage}/>
+                    <Route path='/about' Component={About} />
+                </Routes>
+            </Router>
+            <Footer/>
+        </div>
     )
 }
 
