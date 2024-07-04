@@ -4,9 +4,10 @@ import { ArrowRightOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 
 interface Post {
+    deleted: boolean;
     id: number;
     title: string;
-    body: string;
+    text: string;
 }
 
 interface Props {
@@ -24,7 +25,7 @@ const PostList: React.FC<Props> = ({ posts, loading }) => {
                     {posts.map(post => (
                         <div className={styles.post} key={post.id}>
                             <div className={styles.title}>{post.title}</div>
-                            <p className={styles.body}>{post.body}</p>
+                            <p className={styles.body}>{post.text}</p>
                             <Link to={`post/${post.id}`} className={styles.link}>
                                 <span>Read More</span>
                                 <ArrowRightOutlined className={styles.arrow__icon}/>

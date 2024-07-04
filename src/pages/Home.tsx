@@ -3,9 +3,10 @@ import PostList from "../components/PostList/PostList";
 import { Pagination, Button, Modal, notification } from "antd";
 
 interface Post {
+    deleted: false;
     id: number;
     title: string;
-    body: string;
+    text: string;
 }
 
 const Home: React.FC = () => {
@@ -17,12 +18,30 @@ const Home: React.FC = () => {
     const postListRef = useRef<HTMLDivElement>(null);
     const [api, contextHolder] = notification.useNotification();
 
-    const fetchPosts = async (page: any) => {
+    const [totalPosts, setTotalPosts] = useState(5);
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const fetchPosts = async (page: number) => {
         setLoading(true);
         try {
-            const response = await fetch(`https://dummyjson.com/posts?skip=${(page - 1) * 5}&limit=5&select=id,body,title`);
+            const response = await fetch('https://6686864e83c983911b029ea6.mockapi.io/api/blog/articles');
             const data = await response.json();
-            setPosts(data.posts);
+            setTotalPosts(data.length);
+            const itemsPerPage = 5;
+            const totalPages = Math.ceil(data.length / itemsPerPage);
+            console.log("Total posts: " + data.length);
+
+            if (page < 1 || page > totalPages) {
+                console.warn(`Invalid page number: ${page}. Defaulting to page 1.`);
+                page = 1;
+            }
+            const startIndex = (page - 1) * itemsPerPage;
+            console.log("Start index: " + startIndex);
+            const endIndex = Math.min(startIndex + itemsPerPage, data.length);
+            console.log("End index: " + endIndex);
+            const paginatedData = data.slice(startIndex, endIndex);
+            setPosts(paginatedData);
+            setCurrentPage(page);
         } catch (error) {
             console.error('Error fetching posts:', error);
         } finally {
@@ -34,22 +53,23 @@ const Home: React.FC = () => {
 
     const addPost = async() => {
         try {
-            const response = await fetch('https://dummyjson.com/posts/add', {
+            const response = await fetch('https://6686864e83c983911b029ea6.mockapi.io/api/blog/articles', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     title,
-                    body: text,
-                    userId: 1
+                    text,
                 })
             });
-            const data = await response.json();
-            console.log(data);
-            openNotification('Success!', 'Post was added.\n (Примечание: Добавление новой записи не приведет к ее добавлению на сервер. Он смоделирует запрос и вернет новую созданную запись в виде JSON)', 'success');
+            await response.json();
             setIsModalOpen(false);
+            setTitle('');
+            setText('');
+            fetchPosts(Math.ceil((totalPosts + 1) / 5));
+            openNotification('Success!', 'Post was added!', 'success');
         } catch (error) {
             openNotification('Error!', 'Something went wrong', 'alert');
-            console.error('Eror adding post: ', error);
+            console.error('Error adding post: ', error);
         }
     }
 
@@ -57,7 +77,7 @@ const Home: React.FC = () => {
         api.open({
             message: message,
             description: description,
-            duration: 0,
+            duration: 2,
             type: type
         });
     };
@@ -107,7 +127,7 @@ const Home: React.FC = () => {
                 </Modal>
             </div>
             <PostList posts={posts} loading={loading} />
-            <Pagination defaultCurrent={1} total={50} onChange={(page) => {fetchPosts(page); scrollToPostList}} />
+            <Pagination current={currentPage} defaultCurrent={1} pageSize={5} total={totalPosts} onChange={(page) => { fetchPosts(page); scrollToPostList(); }} />
         </div>
     );
 };

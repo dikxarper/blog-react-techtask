@@ -16,10 +16,10 @@ const PostPage: React.FC = () => {
 
     const fetchPost = async () => {
         try {
-            const response = await fetch(`https://dummyjson.com/posts/${id}`);
+            const response = await fetch(`https://6686864e83c983911b029ea6.mockapi.io/api/blog/articles/${id}`);
             const data = await response.json();
             setTitle(data.title);
-            setText(data.body);
+            setText(data.text);
         } catch (error) {
             console.error('Error fetching posts:', error);
         } finally {
@@ -49,12 +49,12 @@ const PostPage: React.FC = () => {
 
     const editPost = async() => {
         try {
-            const response = await fetch(`https://dummyjson.com/posts/${id}`, {
+            const response = await fetch(`https://6686864e83c983911b029ea6.mockapi.io/api/blog/articles/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                   title: modalTitle,
-                  body: modalText
+                  text: modalText
                 })
             });
             const data = await response.json();
@@ -62,7 +62,7 @@ const PostPage: React.FC = () => {
             setTitle(modalTitle);
             setText(modalText);
             setIsModalOpen(false);
-            openNotification('Success!', 'Post was edited.\n (Примечание: Изменение записи не приведет к ее изменению на сервере)', 'success');
+            openNotification('Success!', 'Post was edited!', 'success');
         } catch (error) {
             openNotification('Error!', 'Something went wrong', 'alert');
             console.error('Eror editing post: ', error);
@@ -71,12 +71,12 @@ const PostPage: React.FC = () => {
 
     const deletePost = async() => {
         try {
-            const response = await fetch(`https://dummyjson.com/posts/${id}`, {
+            const response = await fetch(`https://6686864e83c983911b029ea6.mockapi.io/api/blog/articles/${id}`, {
                 method: 'DELETE',
             });
             const data = await response.json();
             console.log(data);
-            openNotification('Success!', 'Post was deleted. You will be redirected in 5s...\n (Примечание: Удаление записи не приведет к ее удалению на сервере)', 'success');
+            openNotification('Success!', 'Post was deleted! You will be redirected in 5s...', 'success');
             setTimeout(() => {
                 navigate(-1);
             }, 5000)
